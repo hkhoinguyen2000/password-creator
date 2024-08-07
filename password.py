@@ -1,6 +1,5 @@
 from english_words import get_english_words_set
 import random
-import math
 
 # Get the set of English words
 english_words = get_english_words_set(['web2'])
@@ -8,22 +7,8 @@ english_words = get_english_words_set(['web2'])
 # Convert the set to a list to enable indexing
 english_words_list = list(english_words)
 
-# Pick four random words
-wordList = random.sample(english_words_list, 4)
 
-# get the number of chars for each word
-wordListCt = sum(len(word) for word in wordList)
-
-while wordListCt > 17:
-    wordList = random.sample(english_words_list, 4)
-    # print(wordList)
-    wordListCt = sum(len(word) for word in wordList)
-
-
-# print(wordList)
-formattedWord = []
-
-# swap chars with their similar symbosl randomly
+# swap chars with their similar symbols randomly
 charToSymbol = {
     "o": '0',
     'O': '0',
@@ -37,47 +22,74 @@ charToSymbol = {
     'A': '4'
 }
 
-# these are random symbols
+# random chars
 randomChars = "-/:;()$&@.,?!"
 
-# iterate through each word
 
-for word in wordList:
-    newWord = ""
-    for char in word:
-        currentChar = ""
-        coinFlip = random.randint(0, 1)
+def passwordCreator(wordCt, passwordLen, randomSep):
+    # Pick a specified amount of words
+    wordList = random.sample(english_words_list, wordCt)
 
-        # flip to lower case
-        if coinFlip == 0:
-            currentChar = char.lower()
+    # get the number of chars for each word
+    wordListCt = sum(len(word) for word in wordList)
 
-            if currentChar in charToSymbol:
-                # second coinflip: pick between symbol and char
-                coinFlip = random.randint(0, 1)
+    # password should be up to passwordLen
+    # with wordCt - 1 separators
 
-                if coinFlip == 0:
-                    currentChar = random.choice(charToSymbol[currentChar])
+    print("The program is now creating a password of length", passwordLen, "composed of", wordCt, "words.")
+    while wordListCt > (passwordLen - wordCt - 1):
+        wordList = random.sample(english_words_list, 4)
+        # print(wordList)
 
-        # flip to uppercase
-        else:
-            currentChar = char.upper()
+        wordListCt = sum(len(word) for word in wordList)
+
+    print("The program has now found a wordlist of length", wordCt, "that sums to", passwordLen, "chars.")
+
+    formattedWord = []
+
+
+
+
+    # iterate through each word
+    for word in wordList:
+        newWord = ""
+        for char in word:
+            currentChar = ""
+            coinFlip = random.randint(0, 1)
+
+            # flip to lower case
+            if not coinFlip:
+                currentChar = char.lower()
+
+                if currentChar in charToSymbol:
+                    # second coinflip: pick between symbol and char
+                    coinFlip = random.randint(0, 1)
+                    
+                    if not coinFlip:
+                        currentChar = random.choice(charToSymbol[currentChar])
+
+            # flip to uppercase
+            else:
+                currentChar = char.upper()
+            
+                if currentChar in charToSymbol:
+                    # second coinflip: pick between symbol and a random char equivalent char
+                    coinFlip = random.randint(0, 1)
+
+                    if not coinFlip:
+                        currentChar = random.choice(charToSymbol[currentChar])
+
+            newWord += currentChar
         
-            if currentChar in charToSymbol:
-                # second coinflip: pick between symbol and a random char equivalent char
-                coinFlip = random.randint(0, 1)
+        formattedWord.append(newWord)
 
-                if coinFlip == 0:
-                    currentChar = random.choice(charToSymbol[currentChar])
+    if randomSep:
+        randomSeparatorChar = random.choice(randomChars)
+        return(randomSeparatorChar.join(formattedWord))
 
+    else:
+        return('-'.join(formattedWord))
 
-
-        
-        newWord += currentChar
-    
-    formattedWord.append(newWord)
-
-randomSymbols = "-/:;()&.,?!"
-
-print('-'.join(formattedWord))
-
+numWords = input("Enter the number of words you want in your password: ")
+passwordLen = input("Enter the desired length of your password: ")
+print(passwordCreator(int(numWords), int(passwordLen), False))
