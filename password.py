@@ -24,9 +24,15 @@ charToSymbol = {
 
 # random chars
 randomChars = "-/:;()$&@.,?!"
+random_separators = "_-"
 
 
 def passwordCreator(wordCt, passwordLen, randomSep):
+
+    if wordCt >= passwordLen:
+        print("It is not possible to have more words than the length of the password")
+        return
+        
     # Pick a specified amount of words
     wordList = random.sample(english_words_list, wordCt)
 
@@ -84,7 +90,7 @@ def passwordCreator(wordCt, passwordLen, randomSep):
         formattedWord.append(newWord)
 
     if randomSep:
-        randomSeparatorChar = random.choice(randomChars)
+        randomSeparatorChar = random.choice(random_separators)
         return(randomSeparatorChar.join(formattedWord))
 
     else:
